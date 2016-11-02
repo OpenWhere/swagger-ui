@@ -37,7 +37,7 @@
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-        url = "http://petstore.swagger.io/v2/swagger.json";
+        url = "http://localhost:5000/spec";
       }
 
       hljs.configure({
@@ -84,6 +84,30 @@
           console.log.apply(console, arguments);
         }
       }
+
+      function setupAuth(){
+        var apiAuth = new SwaggerClient.ApiKeyAuthorization('Authorization', 'Bearer ', 'header');
+        window.swaggerUi.api.clientAuthorizations.add( 'Authorization', apiAuth );
+
+        var input = $('<input type="text" placeholder="JWT Token">')
+                    .css({
+                      'font-size': '12pt',
+                      width: '50%',
+                      padding: '5px',
+                      'margin-left': '10px'
+                    })
+                    .prependTo('#swagger-ui-container');
+
+        var label = $('<label>JWT Token:</label>').insertBefore(input);
+
+        input.change(function(){
+          console.log('Updating JWT token Auth header.');
+          var jwtToken = $.trim( input.val() );
+          apiAuth.value = 'Bearer ' + jwtToken;
+        });
+      }
+
+      window.setTimeout( setupAuth, 1000 );
   });
   </script>
 </head>
